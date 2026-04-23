@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails Cérémonies</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Pinyon+Script&family=Noto+Serif+Hebrew:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --color-teal: #5faeb6; 
+            --color-text: #050505; 
+            --color-grey: #444; 
+            --ease-cinematic: cubic-bezier(0.25, 1, 0.5, 1);
+            --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            --font-script: 'Pinyon Script', cursive; 
+            --font-body: 'Cormorant Garamond', serif; 
+            --font-caps: 'Cinzel', serif; 
+            --font-hebrew: 'Noto Serif Hebrew', serif; 
+        }
+
+        * { box-sizing: border-box; }
+
+        body { 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f4f7f6; 
+            font-family: var(--font-body); 
+            color: var(--color-text); 
+            overflow-x: hidden; 
+        }
+
+        /* --- FLASH INTRODUCTION --- */
+        #intro-flash {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #fff;
+            z-index: 10000;
+            animation: flashOut 1.5s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @keyframes flashOut {
+            0% { opacity: 1; }
+            70% { opacity: 0; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+
+        .page-wrapper { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 20px 10px; 
+            gap: 60px; 
+            max-width: 600px; 
+            margin: 0 auto; 
+            width: 100%;
+            perspective: 1200px; 
+        }
+        
+        @keyframes superEntrance {
+            0% { opacity: 0; transform: translateY(150px) rotateX(15deg) scale(0.85); }
+            100% { opacity: 1; transform: translateY(0) rotateX(0) scale(1); box-shadow: 0 30px 60px -10px rgba(0,0,0,0.25); }
+        }
+
+        @keyframes textFocusIn {
+            0% { filter: blur(12px); opacity: 0; transform: translateY(20px); }
+            100% { filter: blur(0px); opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slowZoom { 0% { transform: scale(1); } 100% { transform: scale(1.15); } }
+        @keyframes spinJewelry { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes spinMusic { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .invitation-card { 
+            background: #fff; 
+            width: 100%; 
+            border-radius: 12px; 
+            padding: 40px 15px; 
+            text-align: center; 
+            position: relative; 
+            overflow: hidden; 
+            border: 1px solid rgba(255,255,255,0.6); 
+            opacity: 0; 
+            transform-style: preserve-3d;
+        }
+        
+        .invitation-card.visible { 
+            animation: superEntrance 1.4s var(--ease-cinematic) 0.3s forwards; 
+        }
+        
+        .card-bg-decor { 
+            position: absolute; 
+            top: 0; left: 0; width: 100%; height: 100%; 
+            pointer-events: none; 
+            z-index: 0; 
+            background-size: cover; 
+            background-position: center; 
+            animation: slowZoom 20s ease-in-out infinite alternate;
+        }
+
+        .card-content { 
+            position: relative; 
+            z-index: 2; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 6px; 
+            padding: 5px; 
+            width: 100%; 
+        }
+        
+        .card-content > * { opacity: 0; }
+        .invitation-card.visible .card-content > * { animation: textFocusIn 1s var(--ease-cinematic) 0.3s forwards; }
+        
+        .invitation-card.visible .card-content > *:nth-child(n) { animation-delay: calc(0.3s + (0.1s * var(--item-index))); }
+
+        .mini-logo { width: 120px; margin-bottom: 15px; filter: drop-shadow(0px 2px 5px rgba(255,255,255,0.9)); }
+        .jewelry-rings { width: 50px; height: 50px; margin: 5px 0; animation: spinJewelry 15s linear infinite; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2)); }
+        .ceremony-title { font-family: var(--font-caps); font-size: 1.6rem; letter-spacing: 2px; text-transform: uppercase; color: #000; margin: 5px 0 0 0; font-weight: 700; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 5px; display: inline-block; }
+        .names-large { font-family: var(--font-script); font-size: 3.8rem; line-height: 1.1; margin: 5px 0; text-align: center; color: #000; }
+        .intro-text { font-family: var(--font-body); font-style: italic; font-size: 1.3rem; color: var(--color-grey); margin: 0; font-weight: 500; }
+        .bsd { position: absolute; top: 20px; right: 20px; font-family: var(--font-hebrew); font-size: 0.9rem; color: #444; z-index: 5; text-shadow: 0 0 5px white; }
+        
+        .parents-block { display: flex; justify-content: center; gap: 30px; width: 100%; margin: 15px 0; font-size: 1.2rem; font-family: var(--font-body); color: #111; line-height: 1.2; }
+        .parents-column { flex: 1; } 
+        .parents-column p { margin: 0; }
+        .parents-column strong { font-weight: 700; color: #000; text-transform: uppercase; font-size: 0.8em; letter-spacing: 1px; font-family: var(--font-caps); }
+
+        .date-box { margin: 10px 0; padding: 10px 0; border-top: 1px solid #222; border-bottom: 1px solid #222; width: 80%; }
+        .date-main { font-family: var(--font-caps); font-weight: 700; font-size: 1.3rem; text-transform: uppercase; letter-spacing: 1px; color: #000; }
+        .date-sub { font-size: 1.2rem; font-style: italic; color: #333; margin-top: 2px; }
+        .location-text { font-family: var(--font-caps); font-weight: 700; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; }
+        .address-text { font-family: var(--font-body); font-size: 1.2rem; font-style: italic; color: #222; }
+
+        .btn-group { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 200px; margin-top: 20px; }
+        .btn-luxe { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 8px 15px; border-radius: 50px; text-decoration: none; font-family: var(--font-caps); font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; font-weight: 700; transition: transform 0.2s var(--ease-bounce); cursor: pointer; position: relative; overflow: hidden; }
+        .btn-waze { background: linear-gradient(135deg, #5faeb6 0%, #3a7e85 100%); color: white; box-shadow: 0 8px 20px rgba(95, 174, 182, 0.3); border: none; }
+        .btn-waze::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, transparent, rgba(255,255,255,0.6), transparent); transform: skewX(-20deg); animation: shine 3s infinite; }
+        @keyframes shine { 0% { left: -100%; } 100% { left: 200%; } }
+
+        .footer-note { font-size: 0.95rem; font-family: var(--font-body); font-style: italic; color: #555; margin-top: 25px; border-top: 1px solid rgba(0,0,0,0.15); padding-top: 10px; width: 90%; font-weight: 600; line-height: 1.5; }
+
+        #music-control { position: fixed; bottom: 20px; right: 20px; width: 45px; height: 45px; background: #5faeb6; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); cursor: pointer; z-index: 9999; border: 2px solid white; opacity: 0.9; }
+        #music-control.playing svg { animation: spinMusic 4s linear infinite; }
+
+        .hebrew-text-simple { font-family: var(--font-hebrew); font-size: 2.2rem; color: #111; font-weight: 700; margin-top: 5px; }
+
+        @media (max-width: 600px) {
+            .names-large { font-size: 2.8rem; }
+            .hebrew-text-simple { font-size: 1.8rem; }
+            .parents-block { flex-direction: column; gap: 15px; }
+            .parents-column { text-align: center !important; border-right: none !important; padding: 0 !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="intro-flash"></div>
+
+    <audio id="wedding-audio" loop>
+        <source src="musique.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="music-control" onclick="toggleMusic()">
+        <svg viewBox="0 0 24 24" width="22" fill="white"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+    </div>
+
+    <div class="page-wrapper">
+        <div class="invitation-card" id="card-civile">
+            <div class="card-bg-decor" style="background-image: url('Mairie.png'); opacity: 0.9;"></div>
+            <div class="bsd">בס"ד</div>
+            <div class="card-content">
+                <img src="logo.png" alt="Logo AA" class="mini-logo" style="--item-index: 1">
+                <svg class="jewelry-rings" viewBox="0 0 100 60" fill="none" style="--item-index: 2"><circle cx="35" cy="30" r="22" stroke="#222" stroke-width="3"/><g><circle cx="65" cy="30" r="22" stroke="#222" stroke-width="2"/><path d="M65 8 L58 16 L65 24 L72 16 Z" fill="white" stroke="#222" stroke-width="1"/><path d="M58 16 L72 16" stroke="#222" stroke-width="0.5"/></g></svg>
+                <h2 class="ceremony-title" style="--item-index: 3">Cérémonie Civile</h2>
+                <div class="names-large" style="--item-index: 4">Alan & Annael</div>
+                <p class="intro-text" style="--item-index: 5; font-size: 1.8rem; font-weight: 600; margin-top: 5px;">se diront "Oui"</p>
+                <div class="date-box" style="--item-index: 6"><div class="date-main">Mercredi 6 mai 2026 à 13h </div></div>
+                <div class="location-box" style="--item-index: 7"><div class="location-text">Mairie de Pantin</div><div class="address-text">45 avenue du Général Leclerc</div></div>
+                
+                <div class="btn-group" style="--item-index: 10;">
+                    <a href="https://ul.waze.com/ul?venue_id=1573353.15733530.8302235" target="_blank" class="btn-luxe btn-waze">Waze</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="invitation-card" id="card-religieuse">
+            <div class="card-bg-decor" style="background-image: url('houppa.png'); opacity: 0.25;"></div>
+            <div class="bsd">בס"ד</div>
+            <div class="card-content">
+                <img src="phrase.png" alt="Kol Sasson" class="hebrew-phrase-img" style="--item-index: 1">
+                <svg class="ceremony-icon-static" viewBox="0 0 24 24" style="--item-index: 2; width:24px; fill:#111; margin-top:-5px;"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                <h2 class="ceremony-title" style="--item-index: 3">Cérémonie Religieuse</h2>
+                
+                <div class="parents-block" style="--item-index: 4">
+                    <div class="parents-column left-col" style="text-align: right; border-right: 1px solid #aaa; padding-right: 20px;">
+                        <p><strong>Mme Claudine Castro</strong></p><p><strong>Mr & Mme Steve Castro</strong></p>
+                    </div>
+                    <div class="parents-column right-col" style="text-align: left; padding-left: 20px;">
+                        <p><strong>Mr Fernand Haouzi</strong></p><p><strong>Mr & Mme Simon Amsellem</strong></p>
+                    </div>
+                </div>
+
+                <p class="intro-text" style="--item-index: 5; margin-bottom: 2px;">Remercient Hachem de vous convier au mariage</p>
+                <p class="intro-text" style="--item-index: 6;">de leurs enfants et petits enfants</p>
+                
+                <div class="names-large" style="--item-index: 7">Annael & Alan</div>
+                <div class="hebrew-text-simple" style="--item-index: 8">אנאל & אלן</div>
+                
+                <div class="date-box" style="--item-index: 9">
+                    <div class="date-main">Lundi 11 mai 2026</div><div class="date-sub">24 Iyar 5786</div>
+                    <div class="date-main" style="margin-top:5px; color: var(--color-teal); font-size: 1.2rem; border:none; padding:0;">17h30 Houppa</div>
+                </div>
+
+                <div class="location-box" style="--item-index: 10">
+                    <div class="location-text">Le White</div>
+                    <div class="address-text">68 rue Louis Ampère, 93330 Neuilly sur Marne</div>
+                </div>
+
+                <div class="btn-group" style="--item-index: 11">
+                    <a href="https://ul.waze.com/ul?place=ChIJy9vYoaoT5kcRpAAtXJ5Qr8A" target="_blank" class="btn-luxe btn-waze">Waze</a>
+                    <a href="deuxieme-page.html" class="btn-luxe" style="border: 1px solid #1a1a1a; color: #1a1a1a;">Répondre</a>
+                </div>
+
+                <div class="footer-note" style="--item-index: 12">
+                    Une pensée pour nos grands parents<br>
+                    Ange et Lydia Cohen-Jonathan z"l<br>
+                    Roger Castro z"l<br>
+                    Shirley Haouzi z"l<br>
+                    David et Zahri Amsellem z"l
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- MUSIQUE AU SCROLL ---
+        let audioStarted = false;
+        const audio = document.getElementById("wedding-audio");
+        const btn = document.getElementById("music-control");
+
+        const startAudio = () => {
+            if (!audioStarted) {
+                audio.play().then(() => {
+                    audioStarted = true;
+                    btn.classList.add("playing");
+                    window.removeEventListener('scroll', startAudio);
+                    window.removeEventListener('touchstart', startAudio);
+                }).catch(() => {});
+            }
+        };
+
+        window.addEventListener('scroll', startAudio, { passive: true });
+        window.addEventListener('touchstart', startAudio, { passive: true });
+
+        function toggleMusic() {
+            if (audio.paused) { audio.play(); btn.classList.add("playing"); audioStarted = true; } 
+            else { audio.pause(); btn.classList.remove("playing"); }
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.invitation-card').forEach(card => observer.observe(card));
+    </script>
+</body>
+</html>
